@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import "./App.css";
 
-import { Login } from "./components/views/Login";
+import { Login } from "./components/views/Login/Login";
 import { Task } from "./components/views/Tasks/Task";
 
 const Error404 = lazy(() => import("./components/views/Error/Error404"));
