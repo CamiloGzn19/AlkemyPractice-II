@@ -3,6 +3,7 @@ import { Header } from "../../Header/Header";
 import { cardData } from "./data";
 import { Card } from "../../Card/Card";
 import "./Task.styles.css";
+import { TaskForm } from "../../TaskForm/TaskForm";
 
 export const Task = () => {
   const { isPhone } = useResize();
@@ -21,6 +22,7 @@ export const Task = () => {
     <>
       <Header />
       <main id="tasks">
+        <TaskForm />
         <section className="wrapper_list">
           <div className="list_header">
             <h2>Mis tareas</h2>

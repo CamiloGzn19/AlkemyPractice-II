@@ -1,5 +1,7 @@
 #tasks {
   padding: 20px 15px 5px;
+  display: flex;
+  flex-direction: column;
 }
 
 #tasks .wrapper_list {
@@ -84,4 +86,13 @@
   display: block;
   font-size: 0.8rem;
   margin: 0;
+}
+
+@media (min-width: 900px) {
+  #tasks .wrapper_list {
+    flex: 1;
+  }
+  #tasks {
+    flex-direction: row;
+  }
 }
