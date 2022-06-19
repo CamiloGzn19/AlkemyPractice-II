@@ -1,9 +1,11 @@
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import "./TaskForm.styles.css";
 
 export const TaskForm = () => {
+
   const initialValues = {
     title: "",
     status: "",
@@ -12,7 +14,7 @@ export const TaskForm = () => {
   };
 
   const onSubmit = () => {
-    alert();
+    
   };
 
   const required = "* Campo obligatorio";

@@ -1,0 +1,13 @@
+{
+  "info": [
+    {
+      "status_code": 200,
+      "message": "OK",
+      "result": {
+        "continente": ["America", "Europa", "Otro"],
+        "region": ["Otro", "Latam", "Brasil", "America del Norte"],
+        "Rol": ["Team Member", "Team Leader"]
+      }
+    }
+  ]
+}
