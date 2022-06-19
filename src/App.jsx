@@ -4,8 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import "./App.css";
 
-import { Login } from "./components/views/Login/Login";
+import { Login } from "./components/views/auth/Login/Login";
 import { Task } from "./components/views/Tasks/Task";
+import { Registro } from "./components/views/auth/Register/Register"
 
 const Error404 = lazy(() => import("./components/views/Error/Error404"));
 
@@ -59,6 +60,20 @@ function App() {
                 variants={pageTransition}
               >
                 <Login />
+              </motion.div>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <motion.div
+                className="page"
+                initial="out"
+                animate="in"
+                exit="out"
+                variants={pageTransition}
+              >
+                <Registro />
               </motion.div>
             }
           />

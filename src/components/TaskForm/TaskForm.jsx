@@ -43,8 +43,6 @@ export const TaskForm = () => {
               placeholder="Título"
               className={errors.title ? "error" : ""}
             />
-          </div>
-          <div>
             {errors.title && touched.title && (
               <span className="error-message">{errors.title}</span>
             )}
@@ -61,8 +59,6 @@ export const TaskForm = () => {
               <option value="In Process">En proceso</option>
               <option value="Finished">Terminada</option>
             </select>
-          </div>
-          <div>
             {errors.status && touched.status && (
               <span className="error-message">{errors.status}</span>
             )}
@@ -79,8 +75,6 @@ export const TaskForm = () => {
               <option value="Medium">Meda</option>
               <option value="High">Alta</option>
             </select>
-          </div>
-          <div>
             {errors.priority && touched.priority && (
               <span className="error-message">{errors.priority}</span>
             )}

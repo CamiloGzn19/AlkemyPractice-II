@@ -26,6 +26,11 @@
   padding: 5px 0;
 }
 
+.auth > form > div > a {
+  text-decoration: none;
+  color: black;
+}
+
 .auth > form > div > :not(label) {
   padding: 8px 0;
 }
@@ -35,7 +40,8 @@
   font-size: 15px;
 }
 
-.auth input {
+.auth input,
+.auth select {
   border-radius: var(--global-radius);
   border: var(--global-border);
 }
@@ -59,6 +65,12 @@
   background-color: white;
   padding: 10px !important;
   font-size: 16px;
+}
+
+.auth input.error,
+.auth select.error,
+.auth textarea.error {
+  border: 1px solid var(--global-primary-color);
 }
 
 @media screen and (min-width: 600px) {
