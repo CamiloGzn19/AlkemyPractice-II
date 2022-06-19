@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import { v4 as uuidv4 } from "uuid";
+import { Switch, FormControlLabel } from "@mui/material";
 
 import "../Auth.styles.css";
 
@@ -22,6 +24,7 @@ export const Registro = () => {
     role: "",
     continent: "",
     region: "",
+    switch: false,
   };
 
   const required = "* Campo obligatorio";
@@ -40,14 +43,43 @@ export const Registro = () => {
     region: Yup.string("").required(required),
   });
 
-  const onSubmit = (e) => {
-    alert("Hola");
+  const handleChangeContinent = (value) => {
+    setFieldValue("continent", value);
+    if (value !== "America") setFieldValue("region", value);
+  };
+
+  const onSubmit = () => {
+    const teamID = !values.teamID ? uuidv4() : values.teamID;
+    fetch("http://localhost:4100/user/", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        user: {
+          userName: values.userName,
+          password: values.password,
+          email: values.email,
+          teamID: teamID,
+          role: values.role,
+          continent: values.continent,
+          region: values.region,
+        },
+      }),
+    }).then((response) => response.json().then((data) => console.log(data)));
   };
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
 
-  const { handleSubmit, handleChange, handleBlur, errors, touched, values } =
-    formik;
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    errors,
+    touched,
+    values,
+    setFieldValue,
+  } = formik;
 
   return (
     <div className="auth">
@@ -95,11 +127,31 @@ export const Registro = () => {
             <span className="error-message">{errors.email}</span>
           )}
         </div>
-        <input
-          type="hidden"
-          name="teamID"
-          value="9csdcs9dcsdc dc9sd-c9sdc59sdcsd"
+        <FormControlLabel
+          control={
+            <Switch
+              value={values.switch}
+              onChange={() =>
+                formik.setFieldValue("switch", !formik.values.switch)
+              }
+              name="switch"
+              color="default"
+            />
+          }
+          label="Pertenezco a un equipo ya creado"
         />
+        {!values.switch && (
+          <div>
+            <label>Por favor introduce el identificador de equipo</label>
+            <input
+              type="text"
+              name="teamID"
+              value={values.teamID}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+
         <div>
           <label>Rol</label>
           <select
@@ -111,7 +163,9 @@ export const Registro = () => {
           >
             <option value="">-- Seleccionar rol --</option>
             {data?.Rol.map((option, index) => (
-              <option key={index} value={option}>{option}</option>
+              <option key={index} value={option}>
+                {option}
+              </option>
             ))}
           </select>
           {errors.role && touched.role && (
@@ -123,37 +177,45 @@ export const Registro = () => {
           <select
             name="continent"
             onBlur={handleBlur}
-            onChange={handleChange}
+            onChange={(event) =>
+              handleChangeContinent(event.currentTarget.value)
+            }
             value={values.continent}
             className={errors.continent && touched.continent ? "error" : ""}
           >
             <option value="">-- Selecciona un continente--</option>
             {data?.continente.map((option, index) => (
-              <option key={index} value={option}>{option}</option>
+              <option key={index} value={option}>
+                {option}
+              </option>
             ))}
           </select>
           {errors.continent && touched.continent && (
             <span className="error-message">{errors.continent}</span>
           )}
         </div>
-        {values.continent === "America" && (<div>
-          <label>Región</label>
-          <select
-            name="region"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.region}
-            className={errors.region && touched.region ? "error" : ""}
-          >
-            <option value="">-- Selecciona una región--</option>
-            {data?.region.map((option, index) => (
-              <option key={index} value={option}>{option}</option>
-            ))}
-          </select>
-          {errors.region && touched.region && (
-            <span className="error-message">{errors.region}</span>
-          )}
-        </div>)}
+        {values.continent === "America" && (
+          <div>
+            <label>Región</label>
+            <select
+              name="region"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.region}
+              className={errors.region && touched.region ? "error" : ""}
+            >
+              <option value="">-- Selecciona una región--</option>
+              {data?.region.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            {errors.region && touched.region && (
+              <span className="error-message">{errors.region}</span>
+            )}
+          </div>
+        )}
         <div>
           <button type="submit">Enviar</button>
         </div>
