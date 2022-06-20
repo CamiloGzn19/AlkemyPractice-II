@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { API_URL } from "../../../../Backend/Variables";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 import { Switch, FormControlLabel } from "@mui/material";
@@ -10,10 +11,12 @@ import "../Auth.styles.css";
 export const Registro = () => {
   const [data, setData] = useState();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetch("http://localhost:4000/info")
+    fetch(`${API_URL}auth/data`)
       .then((response) => response.json())
-      .then((data) => setData(data[0].result));
+      .then((data) => setData(data.result));
   }, []);
 
   const initialValues = {
@@ -45,12 +48,13 @@ export const Registro = () => {
 
   const handleChangeContinent = (value) => {
     setFieldValue("continent", value);
-    if (value !== "America") setFieldValue("region", value);
+    if (value !== "America") setFieldValue("region", "Otro");
   };
 
   const onSubmit = () => {
     const teamID = !values.teamID ? uuidv4() : values.teamID;
-    fetch("http://localhost:4100/user/", {
+
+    fetch(`${API_URL}auth/register`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -60,13 +64,19 @@ export const Registro = () => {
           userName: values.userName,
           password: values.password,
           email: values.email,
-          teamID: teamID,
+          teamID,
           role: values.role,
           continent: values.continent,
           region: values.region,
         },
       }),
-    }).then((response) => response.json().then((data) => console.log(data)));
+    })
+      .then((response) => response.json())
+      .then((data) =>
+        navigate(`/registered/${data.result.user.teamID}`, {
+          replace: true,
+        })
+      );
   };
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
@@ -204,7 +214,6 @@ export const Registro = () => {
               value={values.region}
               className={errors.region && touched.region ? "error" : ""}
             >
-              <option value="">-- Selecciona una región--</option>
               {data?.region.map((option, index) => (
                 <option key={index} value={option}>
                   {option}

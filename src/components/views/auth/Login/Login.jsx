@@ -1,4 +1,5 @@
 import React from "react";
+import { API_URL } from "../../../../Backend/Variables";
 import { useFormik } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -24,9 +25,29 @@ export const Login = () => {
     return errors;
   };
 
-  const onSubmit = (e) => {
-    localStorage.setItem("logged", "yes");
-    navigate("/", { replace: true });
+  const onSubmit = () => {
+    const { userName, password } = values;
+
+    fetch(`${API_URL}auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userName,
+        password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status_code === 200) {
+          localStorage.setItem("token", data?.result?.token);
+          localStorage.setItem("userName", data?.result?.user.userName);
+          navigate("/", { replace: true });
+        } else {
+          // swal();
+        }
+      });
   };
 
   const formik = useFormik({ initialValues, validate, onSubmit });
