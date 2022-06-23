@@ -8,6 +8,7 @@ import { Switch, FormControlLabel } from "@mui/material";
 
 import "../Auth.styles.css";
 
+
 export const Registro = () => {
   const [data, setData] = useState();
 

@@ -35,6 +35,11 @@
   padding: 8px 0;
 }
 
+.auth > form > div > input,
+.auth > form > div > select {
+  padding: 8px !important;
+}
+
 .auth > form > div > div {
   color: var(--global-primary-color);
   font-size: 15px;

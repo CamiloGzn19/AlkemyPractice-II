@@ -2,6 +2,7 @@ import React from "react";
 import { API_URL } from "../../../../Backend/Variables";
 import { useFormik } from "formik";
 import { useNavigate, Link } from "react-router-dom";
+import * as Yup from "yup";
 
 import "../Auth.styles.css";
 
@@ -9,21 +10,20 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const initialValues = {
-    email: "",
+    userName: "",
     password: "",
   };
 
-  const validate = (values) => {
-    const errors = {};
+  const required = "* Campo obligatorio";
 
-    if (!values.email) {
-      errors.email = "El email es requerido";
-    }
-    if (!values.password) {
-      errors.password = "El password es requerido";
-    }
-    return errors;
-  };
+  const validationSchema = Yup.object().shape({
+    userName: Yup.string()
+      .min(4, "La cantidad de caracteres es 4")
+      .required(required),
+    password: Yup.string()
+      .min(6, "La cantidad de caracteres es 6")
+      .required(required),
+  });
 
   const onSubmit = () => {
     const { userName, password } = values;
@@ -50,23 +50,26 @@ export const Login = () => {
       });
   };
 
-  const formik = useFormik({ initialValues, validate, onSubmit });
+  const formik = useFormik({ initialValues, validationSchema, onSubmit });
 
-  const { handleSubmit, handleChange, values, errors } = formik;
+  const { handleSubmit, handleChange, handleBlur, errors, touched, values } =
+    formik;
 
   return (
     <div className="auth">
       <form onSubmit={handleSubmit}>
         <h1>Iniciar sesión</h1>
         <div>
-          <label>Email</label>
+          <label>Nombre de usuario</label>
           <input
-            name="email"
-            type="email"
+            name="userName"
+            type="text"
             onChange={handleChange}
-            value={values.email}
+            value={values.userName}
+            onBlur={handleBlur}
+            className={errors.userName && touched.userName ? "error" : ""}
           />
-          {errors.email && <div>{errors.email}</div>}
+          {errors.userName && touched.userName && <div>{errors.userName}</div>}
         </div>
         <div>
           <label>Contraseña</label>
@@ -75,8 +78,10 @@ export const Login = () => {
             type="password"
             onChange={handleChange}
             value={values.password}
+            onBlur={handleBlur}
+            className={errors.password && touched.password ? "error" : ""}
           />
-          {errors.password && <div>{errors.password}</div>}
+          {errors.password && touched.password && <div>{errors.password}</div>}
         </div>
         <div>
           <button type="submit">Enviar</button>
