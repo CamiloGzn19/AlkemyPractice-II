@@ -4,6 +4,8 @@ import { API_URL } from "../../Backend/Variables";
 import * as Yup from "yup";
 
 import "./TaskForm.styles.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 export const TaskForm = () => {
   const initialValues = {
@@ -27,7 +29,7 @@ export const TaskForm = () => {
       .then((response) => response.json())
       .then((data) => {
         resetForm();
-        alert("Tu tarea se creo");
+        toast("Tu tarea se creo")
       });
   };
 
@@ -100,7 +102,7 @@ export const TaskForm = () => {
             >
               <option value="">--Seleccionar prioridad--</option>
               <option value="LOW">Baja</option>
-              <option value="MEDIUM">Meda</option>
+              <option value="MEDIUM">Media</option>
               <option value="HIGH">Alta</option>
             </select>
             {errors.importance && touched.importance && (
@@ -123,6 +125,7 @@ export const TaskForm = () => {
         </div>
         <button type="submit">Crear</button>
       </form>
+      <ToastContainer />
     </section>
   );
 };

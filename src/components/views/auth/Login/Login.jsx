@@ -3,6 +3,7 @@ import { API_URL } from "../../../../Backend/Variables";
 import { useFormik } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import * as Yup from "yup";
+import { swal } from "../../../../utils/swal";
 
 import "../Auth.styles.css";
 
@@ -45,7 +46,7 @@ export const Login = () => {
           localStorage.setItem("userName", data?.result?.user.userName);
           navigate("/", { replace: true });
         } else {
-          // swal();
+          swal();
         }
       });
   };
