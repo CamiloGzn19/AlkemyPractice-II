@@ -1,12 +1,35 @@
+import { useState, useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/Skeleton.css";
+
+import { API_URL } from "../../../Backend/Variables";
 import { useResize } from "../../../hooks/useResize";
 import { Header } from "../../Header/Header";
-import { cardData } from "./data";
 import { Card } from "../../Card/Card";
 import "./Task.styles.css";
 import { TaskForm } from "../../TaskForm/TaskForm";
 
 export const Task = () => {
+  const [list, setList] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { isPhone } = useResize();
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${API_URL}task`, {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setList(data.result);
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
+      });
+  }, []);
 
   const limitString = (str) => {
     if (str.length > 135)
@@ -15,7 +38,25 @@ export const Task = () => {
   };
 
   const renderAllCards = () => {
-    return cardData.map((data) => <Card key={data.id} data={data} />);
+    return list?.map((data) => <Card key={data._id} data={data} />);
+  };
+
+  const renderNewCards = () => {
+    return list
+      ?.filter((data) => data.status === "NEW")
+      .map((data) => <Card key={data._id} data={data} />);
+  };
+
+  const renderInProgressCards = () => {
+    return list
+      ?.filter((data) => data.status === "IN PROGRESS")
+      .map((data) => <Card key={data._id} data={data} />);
+  };
+
+  const renderFinishedCards = () => {
+    return list
+      ?.filter((data) => data.status === "FINISHED")
+      .map((data) => <Card key={data._id} data={data} />);
   };
 
   return (
@@ -28,69 +69,36 @@ export const Task = () => {
             <h2>Mis tareas</h2>
           </div>
           {isPhone ? (
-            <div className="list phone">{renderAllCards()}</div>
+            !list?.length ? (
+              <div> No hay tareas creadas </div>
+            ) : loading ? (
+              <Skeleton />
+            ) : (
+              <div className="list phone">{renderAllCards()}</div>
+            )
           ) : (
             <div className="list_group">
-              <div className="list">
-                <h4>Nuevas</h4>
-                <div className="card">
-                  <div className="close">X</div>
-                  <h3>Tarea 1</h3>
-                  <h6>24/01/2022 16:40 hs.</h6>
-                  <h5>Camilo Garzón</h5>
-                  <button type="button">Nueva</button>
-                  <button type="button">Alta</button>
-                  <p>
-                    {
-                      limitString(`Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Aliquid expedita voluptatem ab commodi
-                    quam quos deserunt beatae hic, ad harum autem quibusdam
-                    neque at quae eaque ea inventore ut similique. Magnam
-                    tenetur culpa minus laudantium vero quia adipisci veniam ex
-                    corporis laborum distinctio, nam suscipit quam id error
-                    inventore? Veniam minima placeat illo perferendis iste
-                    necessitatibus ea temporibus totam quaerat? Magni nostrum
-                    consequatur numquam dolores quis modi est rem sapiente
-                    accusamus, quisquam pariatur ducimus explicabo, reiciendis
-                    reprehenderit totam corrupti necessitatibus. Illum dolores
-                    corporis eius dolorem quaerat pariatur ratione animi
-                    explicabo? At soluta nesciunt deserunt facilis qui
-                    asperiores eaque, eligendi aut aliquam in nam? Saepe
-                    voluptatibus illum autem recusandae, nihil labore quibusdam,
-                    voluptatem aut laudantium assumenda possimus fugit officia
-                    amet? Quos! Labore dolore omnis adipisci est quaerat
-                    suscipit, unde iure soluta. Quo iste quos nam illo quidem! A
-                    blanditiis dolorem dolor expedita eveniet beatae, quo
-                    explicabo, aspernatur, laudantium molestiae maiores
-                    inventore!`).string
-                    }
-                  </p>
-                </div>
-              </div>
-              <div className="list">
-                <h4>En proceso</h4>
-                <div className="card">
-                  <div className="close">X</div>
-                  <h3>Tarea 1</h3>
-                  <h6>24/01/2022 16:40 hs.</h6>
-                  <h5>Camilo Garzón</h5>
-                  <button type="button">Nueva</button>
-                  <button type="button">Alta</button>
-                  <p>Descripción fake...</p>
-                </div>
-              </div>
-              <div className="list">
-                <h4>Finalizadas</h4>
-                <div className="card">
-                  <div className="close">X</div>
-                  <h3>Tarea 1</h3>
-                  <h6>24/01/2022 16:40 hs.</h6>
-                  <h5>Camilo Garzón</h5>
-                  <button type="button">Nueva</button>
-                  <button type="button">Alta</button>
-                  <p>Descripción fake...</p>
-                </div>
-              </div>
+              {!list?.length ? (
+                <div> No hay tareas creadas </div>
+              ) : loading ? (
+                <Skeleton height={90}/>
+              ) : (
+                <>
+                  {" "}
+                  <div className="list">
+                    <h4>Nuevas</h4>
+                    {renderNewCards()}
+                  </div>
+                  <div className="list">
+                    <h4>En proceso</h4>
+                    {renderInProgressCards()}
+                  </div>
+                  <div className="list">
+                    <h4>Finalizadas</h4>
+                    {renderFinishedCards()}
+                  </div>{" "}
+                </>
+              )}
             </div>
           )}
         </section>
