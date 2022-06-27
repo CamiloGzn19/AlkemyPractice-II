@@ -11,10 +11,20 @@ header > img {
 
 header > div {
   cursor: pointer;
+  color: var(--global-primary-color);
 }
 
 @media (min-width: 1200px) {
   header > img {
     width: 140px;
   }
+}
+
+.wrapper_right_header {
+  display: flex;
+  flex-direction: row;
+}
+
+.wrapper_right_header div:first-child {
+  padding-right: 10px;
 }

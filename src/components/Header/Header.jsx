@@ -6,13 +6,17 @@ export const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userName");
     navigate("/Login", { replace: true });
   };
 
   return (
     <header>
       <img src="/img/logo.png" alt="logo" />
-      <div onClick={handleLogout}>X</div>
+      <div className="wrapper_right_header">
+        <div>{localStorage.getItem("userName")}</div>
+        <div onClick={handleLogout}>X</div>
+      </div>
     </header>
   );
 };
