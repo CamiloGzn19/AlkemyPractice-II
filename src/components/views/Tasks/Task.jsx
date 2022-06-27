@@ -50,12 +50,6 @@ export const Task = () => {
     }
   }, [search]);
 
-  const limitString = (str) => {
-    if (str.length > 135)
-      return { string: str.slice(0, 135).concat("..."), addButton: true };
-    return { string: str, addButton: false };
-  };
-
   const renderAllCards = () => {
     return renderList?.map((data) => <Card key={data._id} data={data} />);
   };
