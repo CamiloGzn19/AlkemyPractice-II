@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/Skeleton.css";
 
+import { debounce } from "lodash";
 import { API_URL } from "../../../Backend/Variables";
 import { useResize } from "../../../hooks/useResize";
 import { Header } from "../../Header/Header";
@@ -20,6 +21,7 @@ export const Task = () => {
   const [renderList, setRenderList] = useState(null);
   const [taskFromWho, setTaskFromWho] = useState("ALL");
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
   const { isPhone } = useResize();
 
   useEffect(() => {
@@ -40,6 +42,14 @@ export const Task = () => {
       });
   }, [taskFromWho]);
 
+  useEffect(() => {
+    if (search) {
+      setRenderList(list.filter((data) => data.title.startsWith(search)));
+    } else {
+      setRenderList(list);
+    }
+  }, [search]);
+
   const limitString = (str) => {
     if (str.length > 135)
       return { string: str.slice(0, 135).concat("..."), addButton: true };
@@ -50,9 +60,9 @@ export const Task = () => {
     return renderList?.map((data) => <Card key={data._id} data={data} />);
   };
 
-  const renderNewCards = () => {
+  const renderColumnCards = (text) => {
     return renderList
-      ?.filter((data) => data.status === "NEW")
+      ?.filter((data) => data.status === text)
       .map((data) => <Card key={data._id} data={data} />);
   };
 
@@ -77,6 +87,10 @@ export const Task = () => {
       );
     }
   };
+
+  const handleSearch = debounce((e) => {
+    setSearch(e?.target?.value);
+  }, 1000);
 
   return (
     <>
@@ -110,6 +124,13 @@ export const Task = () => {
                   />
                 </RadioGroup>
               </FormControl>
+              <div className="search">
+                <input
+                  type="text"
+                  placeholder="Buscar por título..."
+                  onChange={handleSearch}
+                />
+              </div>
               <select name="importance" onChange={handleChangeImportance}>
                 <option value="">Seleccionar una prioridad</option>
                 <option value="ALL">Todas</option>
@@ -138,15 +159,15 @@ export const Task = () => {
                   {" "}
                   <div className="list">
                     <h4>Nuevas</h4>
-                    {renderNewCards()}
+                    {renderColumnCards("NEW")}
                   </div>
                   <div className="list">
                     <h4>En proceso</h4>
-                    {renderInProgressCards()}
+                    {renderColumnCards("IN PROGRESS")}
                   </div>
                   <div className="list">
                     <h4>Finalizadas</h4>
-                    {renderFinishedCards()}
+                    {renderColumnCards("FINISHED")}
                   </div>{" "}
                 </>
               )}
