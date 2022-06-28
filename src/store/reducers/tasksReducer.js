@@ -1,4 +1,3 @@
-import { Action } from "history";
 import { TASKS_REQUEST, TASKS_SUCCESS, TASKS_FAILURE } from "../types";
 
 const initialState = {
@@ -20,7 +19,7 @@ export const tasksReducer = (state = initialState, action) => {
         error: "",
         tasks: action.payload,
       };
-    case TASKS_REQUEST:
+    case TASKS_FAILURE:
       return {
         loading: false,
         error: action.payload,
