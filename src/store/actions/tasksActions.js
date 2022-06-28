@@ -1,5 +1,11 @@
 import { API_URL } from "../../Backend/Variables";
-import { TASKS_REQUEST, TASKS_SUCCESS, TASKS_FAILURE } from "../types";
+import {
+  TASKS_REQUEST,
+  TASKS_SUCCESS,
+  TASKS_FAILURE,
+  TASKS_CREATED,
+} from "../types";
+import { toast } from "react-toastify";
 
 export const tasksRequest = () => ({
   type: TASKS_REQUEST,
@@ -13,6 +19,10 @@ export const tasksSuccess = (data) => ({
 export const tasksFailure = (error) => ({
   type: TASKS_FAILURE,
   payload: error,
+});
+
+export const taskCreated = () => ({
+  type: TASKS_CREATED,
 });
 
 export const getTasks = (path) => (dispatch) => {
@@ -68,4 +78,24 @@ export const editTaskStatus = (data) => (dispatch) => {
     .then((response) => response.json())
     .then(() => dispatch(getTasks("")))
     .catch((error) => dispatch(tasksFailure(error)));
+};
+
+export const createTask = (values) => (dispatch) => {
+  fetch(`${API_URL}task`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      task: values,
+    }),
+  })
+    .then((response) => response.json())
+    .then(() => {
+      dispatch(getTasks(""));
+      dispatch(taskCreated());
+      toast("Tu tarea se creo");
+    })
+    .catch((error) => console.log(error));
 };
